@@ -82,9 +82,9 @@ class ExpertBackend:
 
         if outputs_schema is None:
             # run expert once to get outputs schema
-            dummy_args = tuple(sample.make_empty(DUMMY_BATCH_SIZE, device=device) for sample in args_schema)
+            dummy_args = tuple(sample.make_zeros(DUMMY_BATCH_SIZE, device=device) for sample in args_schema)
             dummy_kwargs = {
-                key: sample.make_empty(DUMMY_BATCH_SIZE, device=device) for key, sample in kwargs_schema.items()
+                key: sample.make_zeros(DUMMY_BATCH_SIZE, device=device) for key, sample in kwargs_schema.items()
             }
             dummy_outputs = self.expert(*dummy_args, **dummy_kwargs)
             outputs_schema = nested_map(BatchTensorDescriptor.from_tensor, dummy_outputs)
