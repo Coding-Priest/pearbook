@@ -11,5 +11,5 @@ python -m hivemind.hivemind_cli.run_server \
 --device cuda:0 \
 --listen_on 127.0.0.1:* \
 --dht_listen_on ip4/127.0.0.1 \
---initial_peers '/ip4/127.0.0.1/tcp/45651/p2p/12D3KooWCqK1rjndMzJVK3osS5C86csFGmqzQQDHrhR2Protxb24' \
+--initial_peers '/ip4/127.0.0.1/tcp/40211/p2p/12D3KooWKHcAzHbCyaSnKbtf33sLSNACxvJCJheDR7qXsJtkKoDy' \
 2>&1 | tee -a server_stderr_head_0.log

@@ -83,6 +83,7 @@ hivemind/proto/*_pb2*
 # libp2p-daemon binary
 hivemind/hivemind_cli/p2pd
 .venv
+.venv-py310
 .eggs
 venv
 data

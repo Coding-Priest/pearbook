@@ -1,7 +1,7 @@
 import time
 from typing import List
 
-import wandb
+# import wandb
 from hivemind.utils.networking import choose_ip_address
 from hivemind.utils.logging import TextStyle, get_logger
 from multiaddr import Multiaddr
@@ -51,8 +51,8 @@ if __name__ == "__main__":
     )
     log_visible_maddrs(dht.get_visible_maddrs(), only_p2p=False)
 
-    if monitor_args.wandb_project is not None:
-        wandb.init(project=monitor_args.wandb_project)
+    # if monitor_args.wandb_project is not None:
+    #     wandb.init(project=monitor_args.wandb_project)
 
     current_step = 0
 
@@ -80,12 +80,12 @@ if __name__ == "__main__":
                     current_loss = sum_loss / alive_peers
                     logger.info(f"Step #{current_step}\tloss = {current_loss:.5f}")
 
-                    if monitor_args.wandb_project is not None:
-                        wandb.log(
-                            {
-                                "loss": current_loss,
-                                "alive peers": alive_peers,
-                                "step": latest_step,
-                            }
-                        )
+                    # if monitor_args.wandb_project is not None:
+                    #     wandb.log(
+                    #         {
+                    #             "loss": current_loss,
+                    #             "alive peers": alive_peers,
+                    #             "step": latest_step,
+                    #         }
+                    #     )
         time.sleep(monitor_args.refresh_period)

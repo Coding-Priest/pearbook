@@ -1,0 +1,42 @@
+Collecting wandb==0.15.0
+  Downloading wandb-0.15.0-py3-none-any.whl (2.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 1.6 MB/s eta 0:00:00
+Requirement already satisfied: pydantic in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (1.10.21)
+Requirement already satisfied: requests<3,>=2.0.0 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from wandb==0.15.0) (2.32.3)
+Requirement already satisfied: GitPython!=3.1.29,>=1.0.0 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from wandb==0.15.0) (3.1.44)
+Requirement already satisfied: docker-pycreds>=0.4.0 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from wandb==0.15.0) (0.4.0)
+Collecting appdirs>=1.4.3
+  Downloading appdirs-1.4.4-py2.py3-none-any.whl (9.6 kB)
+Requirement already satisfied: setproctitle in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from wandb==0.15.0) (1.3.5)
+Collecting protobuf!=4.21.0,<5,>=3.19.0
+  Downloading protobuf-4.25.6-cp37-abi3-manylinux2014_x86_64.whl (294 kB)
+     ━━━━━━━━━━━━━━━━━━ 294.6/294.6 kB 2.7 MB/s eta 0:00:00
+Requirement already satisfied: PyYAML in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from wandb==0.15.0) (6.0.2)
+Requirement already satisfied: Click!=8.0.0,>=7.0 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from wandb==0.15.0) (8.1.8)
+Requirement already satisfied: psutil>=5.0.0 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from wandb==0.15.0) (7.0.0)
+Collecting pathtools
+  Downloading pathtools-0.1.2.tar.gz (11 kB)
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Requirement already satisfied: setuptools in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from wandb==0.15.0) (65.5.0)
+Requirement already satisfied: sentry-sdk>=1.0.0 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from wandb==0.15.0) (2.24.1)
+Requirement already satisfied: typing-extensions>=4.2.0 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from pydantic) (4.13.0)
+Requirement already satisfied: six>=1.4.0 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from docker-pycreds>=0.4.0->wandb==0.15.0) (1.17.0)
+Requirement already satisfied: gitdb<5,>=4.0.1 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from GitPython!=3.1.29,>=1.0.0->wandb==0.15.0) (4.0.12)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from requests<3,>=2.0.0->wandb==0.15.0) (2.3.0)
+Requirement already satisfied: idna<4,>=2.5 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from requests<3,>=2.0.0->wandb==0.15.0) (3.10)
+Requirement already satisfied: charset-normalizer<4,>=2 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from requests<3,>=2.0.0->wandb==0.15.0) (3.4.1)
+Requirement already satisfied: certifi>=2017.4.17 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from requests<3,>=2.0.0->wandb==0.15.0) (2025.1.31)
+Requirement already satisfied: smmap<6,>=3.0.1 in /home/anirudh/Projects/hivemind/venv/lib/python3.10/site-packages (from gitdb<5,>=4.0.1->GitPython!=3.1.29,>=1.0.0->wandb==0.15.0) (5.0.2)
+Installing collected packages: pathtools, appdirs, protobuf, wandb
+  Running setup.py install for pathtools: started
+  Running setup.py install for pathtools: finished with status 'done'
+  Attempting uninstall: protobuf
+    Found existing installation: protobuf 5.29.4
+    Uninstalling protobuf-5.29.4:
+      Successfully uninstalled protobuf-5.29.4
+  Attempting uninstall: wandb
+    Found existing installation: wandb 0.19.8
+    Uninstalling wandb-0.19.8:
+      Successfully uninstalled wandb-0.19.8
+Successfully installed appdirs-1.4.4 pathtools-0.1.2 protobuf-4.25.6 wandb-0.15.0
