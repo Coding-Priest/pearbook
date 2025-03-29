@@ -1,0 +1,48 @@
+{
+  "os": "Linux-6.11.0-19-generic-x86_64-with-glibc2.39",
+  "python": "CPython 3.12.3",
+  "startedAt": "2025-03-20T15:57:51.177233Z",
+  "args": [
+    "--initial_peers",
+    "/ip4/127.0.0.1/tcp/43073/p2p/12D3KooWQFWLm2Et8ku6tmDLgf8mvPiXs7jc4poSKU3EFmYkxNVA",
+    "/ip4/192.168.214.246/tcp/43073/p2p/12D3KooWQFWLm2Et8ku6tmDLgf8mvPiXs7jc4poSKU3EFmYkxNVA",
+    "--per_device_train_batch_size",
+    "16"
+  ],
+  "program": "/home/anirudh/Projects/hivemind/examples/albert/./run_trainer.py",
+  "codePath": "examples/albert/run_trainer.py",
+  "git": {
+    "remote": "https://github.com/learning-at-home/hivemind.git",
+    "commit": "f396de0adea273139e598d1fc9f35ca0615b1133"
+  },
+  "root": "/home/anirudh/Projects/hivemind/examples/albert",
+  "host": "anirudh-ASUS-TUF-Gaming-F15-FX506LH-FX506LH",
+  "executable": "/home/anirudh/Projects/hivemind/venv/bin/python3",
+  "codePathLocal": "run_trainer.py",
+  "cpu_count": 4,
+  "cpu_count_logical": 8,
+  "gpu": "NVIDIA GeForce GTX 1650",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "353017999360",
+      "used": "42919632896"
+    }
+  },
+  "memory": {
+    "total": "16597524480"
+  },
+  "cpu": {
+    "count": 4,
+    "countLogical": 8
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce GTX 1650",
+      "memoryTotal": "4294967296",
+      "cudaCores": 896,
+      "architecture": "Turing"
+    }
+  ],
+  "cudaVersion": "12.4"
+}
