@@ -1,3 +1,14 @@
+import sys
+import os
+print("--- sys.path ---")
+for p in sys.path:
+    print(p)
+print("--- CWD ---")
+print(os.getcwd())
+print("--- Importing averaging_pb2 ---")
+# ... (rest of the file starts here)
+from hivemind.proto import averaging_pb2
+
 import asyncio
 from enum import Enum
 from typing import AsyncIterator, Optional, Sequence, Set, Tuple, Type
