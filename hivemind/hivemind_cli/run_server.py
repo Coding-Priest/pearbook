@@ -1,18 +1,16 @@
 from functools import partial
 from pathlib import Path
-from signal import SIGINT, SIGTERM, signal, strsignal
-from threading import Event
 
 import configargparse
 import torch
 
-from hivemind.moe import Server
+from hivemind.moe.server import Server
 from hivemind.moe.server.layers import schedule_name_to_scheduler
 from hivemind.proto.runtime_pb2 import CompressionType
 from hivemind.utils.limits import increase_file_limit
-from hivemind.utils.logging import get_logger, use_hivemind_log_handler
+from hivemind.utils.logging import get_logger, use_src_log_handler
 
-use_hivemind_log_handler("in_root_logger")
+use_src_log_handler("in_root_logger")
 logger = get_logger(__name__)
 
 
@@ -20,7 +18,8 @@ def main():
     # fmt:off
     parser = configargparse.ArgParser(default_config_files=["config.yml"])
     parser.add('-c', '--config', required=False, is_config_file=True, help='config file path')
-
+    parser.add_argument('--listen_on', type=str, default='0.0.0.0:*', required=False,
+                        help="'localhost' for local connections only, '0.0.0.0' for ipv4 '[::]' for ipv6")
     parser.add_argument('--num_experts', type=int, default=None, required=False, help="The number of experts to serve")
     parser.add_argument('--expert_pattern', type=str, default=None, required=False,
                         help='all expert uids will follow this pattern, e.g. "myexpert.[0:256].[0:1024]" will'
@@ -30,24 +29,8 @@ def main():
                         help="specify the exact list of expert uids to create. Use either this or num_experts"
                              " and expert_pattern, not both")
     parser.add_argument('--expert_cls', type=str, default='ffn', required=False,
-                        help="expert type from test_utils.layers, e.g. 'ffn', 'transformer', 'det_dropout' or 'nop'")
+                        help="expert type from test_utils.layers, e.g. 'ffn', 'transformer', 'det_dropout' or 'nop'.")
     parser.add_argument('--hidden_dim', type=int, default=1024, required=False, help='main dimension for expert_cls')
-
-    parser.add_argument('--host_maddrs', type=list, nargs='+', default=['/ip4/0.0.0.0/tcp/0'], required=False,
-                        help='Multiaddrs to listen for external connections from other p2p instances; default: all IPv4 and TCP: /ip4/0.0.0.0/tcp/0')
-    parser.add_argument('--announce_maddrs', type=list, nargs='+', default=None, required=False,
-                        help='Visible multiaddrs the host announces for external connections from other p2p instances')
-    parser.add_argument(
-        "--no_relay",
-        action="store_false",
-        dest="use_relay",
-        help="Disable circuit relay functionality in libp2p (see https://docs.libp2p.io/concepts/nat/circuit-relay/)",
-    )
-    parser.add_argument(
-        "--use_auto_relay",
-        action="store_true",
-        help="Look for libp2p relays to become reachable if we are behind NAT/firewall",
-    )
 
     parser.add_argument('--num_handlers', type=int, default=None, required=False,
                         help='server will use this many processes to handle incoming requests')
@@ -55,21 +38,30 @@ def main():
                         help='Minimum required batch size for all expert operations')
     parser.add_argument('--max_batch_size', type=int, default=16384,
                         help='The total number of examples in the same batch will not exceed this value')
+    parser.add_argument('--use_averaging', action='store_true', help='Whether to use decentralized parameter and '
+                                                                     'gradient averaging by wrapping the optimizer '
+                                                                     'with CollaborativeOptimizer')
+    parser.add_argument('--averaging_target_batch_size', type=int, required=False,
+                        help='Number of examples to accumulate across all peers before averaging')
+    parser.add_argument('--averaging_target_group_size', type=int, required=False,
+                        help='Target group size for decentralized averaging')
     parser.add_argument('--device', type=str, default=None, required=False,
                         help='all experts will use this device in torch notation; default: cuda if available else cpu')
+    parser.add_argument('--fp16',action='store_true',help='Use mixed precision during forward and backward steps')
+    parser.add_argument('--offload',action='store_true',help='Use mixedhivemind_cli precision during forward and backward steps')
 
     parser.add_argument('--optimizer', type=str, default='adam', required=False, help='adam, sgd or none')
     parser.add_argument('--scheduler', type=str, choices=schedule_name_to_scheduler.keys(), default='none',
                         help='LR scheduler type to use')
     parser.add_argument('--num_warmup_steps', type=int, required=False,
                         help='The number of warmup steps for LR schedule')
-    parser.add_argument('--update_period', type=float, required=False, default=30,
-                        help='Server will report experts to DHT once in this many seconds')
-    parser.add_argument('--expiration', type=float, required=False, default=None,
-                        help='DHT entries will expire after this many seconds')
-    parser.add_argument('--num_training_steps', type=int, required=False, help='The total number of steps for LR schedule')
-
+    parser.add_argument('--num_total_steps', type=int, required=False, help='The total number of steps for LR schedule')
     parser.add_argument('--clip_grad_norm', type=float, required=False, help='Maximum gradient norm used for clipping')
+
+    parser.add_argument('--no_dht', action='store_true', help='if specified, the server will not be attached to a dht')
+
+    parser.add_argument('--dht_port', type=int)
+    parser.add_argument('--dht_listen_on', type=str)
 
     parser.add_argument('--initial_peers', type=str, nargs='*', required=False, default=[],
                         help='multiaddrs of one or more active DHT peers (if you want to join an existing DHT)')
@@ -77,13 +69,23 @@ def main():
                         help='On *nix, this will increase the max number of processes '
                              'a server can spawn before hitting "Too many open files"; Use at your own risk.')
     parser.add_argument('--compression', type=str, default='NONE', required=False, help='Tensor compression for gRPC')
+    parser.add_argument('--averaging_compression', type=str, default='FLOAT16', required=False, help='Averaging compression')
     parser.add_argument('--checkpoint_dir', type=Path, required=False, help='Directory to store expert checkpoints')
     parser.add_argument('--stats_report_interval', type=int, required=False,
                         help='Interval between two reports of batch processing performance statistics')
 
     parser.add_argument('--custom_module_path', type=str, required=False,
                         help='Path of a file with custom nn.modules, wrapped into special decorator')
-    parser.add_argument('--identity_path', type=str, required=False, help='Path to identity file to be used in P2P')
+    parser.add_argument('--identity_path', type=str, required=False,
+                        help='Path of a libp2p identity file')
+
+    parser.add_argument('--averaging_min_refresh_period',type=float,default=1)
+    parser.add_argument('--averaging_max_refresh_period',type=float,default=60)
+    parser.add_argument('--averaging_default_refresh_period',type=float,default=10)
+    parser.add_argument('--averaging_expiration',type=float,default=10)
+    parser.add_argument('--metadata_expiration',type=float,default=120)
+    parser.add_argument('--averaging_timeout',type=float,default=30)
+    parser.add_argument('--reuse_grad_buffers',type=bool,default=True)
 
     # fmt:on
     args = vars(parser.parse_args())
@@ -106,20 +108,12 @@ def main():
 
     server = Server.create(**args, optim_cls=optim_cls, start=True, compression=compression)
 
-    exit_event = Event()
-
-    def signal_handler(signal_number: int, _) -> None:
-        logger.info(f"Caught signal {signal_number} ({strsignal(signal_number)}), shutting down")
-        exit_event.set()
-
-    signal(SIGTERM, signal_handler)
-    signal(SIGINT, signal_handler)
-
     try:
-        exit_event.wait()
+        server.join()
+    except KeyboardInterrupt:
+        logger.info("Caught KeyboardInterrupt, shutting down")
     finally:
         server.shutdown()
-        server.join()
 
 
 if __name__ == "__main__":

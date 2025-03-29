@@ -4,10 +4,10 @@ from signal import SIGINT, SIGTERM, signal, strsignal
 from threading import Event
 
 from hivemind.dht import DHT, DHTNode
-from hivemind.utils.logging import get_logger, use_hivemind_log_handler
+from hivemind.utils.logging import get_logger, use_src_log_handler
 from hivemind.utils.networking import log_visible_maddrs
 
-use_hivemind_log_handler("in_root_logger")
+use_src_log_handler("in_root_logger")
 logger = get_logger(__name__)
 
 

@@ -1,3 +1,4 @@
+listen_on: 0.0.0.0:*
 num_experts: 16
 expert_cls: ffn
 hidden_dim: 1024

@@ -14,10 +14,10 @@ from hivemind.moe.server import ModuleBackend, Server
 from hivemind.moe.server.layers import name_to_block
 from hivemind.p2p import P2P
 from hivemind.utils.limits import increase_file_limit
-from hivemind.utils.logging import get_logger, use_hivemind_log_handler
+from hivemind.utils.logging import get_logger, use_src_log_handler
 from hivemind.utils.tensor_descr import BatchTensorDescriptor
 
-use_hivemind_log_handler("in_root_logger")
+use_src_log_handler("in_root_logger")
 logger = get_logger(__name__)
 
 

@@ -5,9 +5,9 @@ import torch
 
 from hivemind.compression import deserialize_torch_tensor, serialize_torch_tensor
 from hivemind.proto.runtime_pb2 import CompressionType
-from hivemind.utils.logging import get_logger, use_hivemind_log_handler
+from hivemind.utils.logging import get_logger, use_src_log_handler
 
-use_hivemind_log_handler("in_root_logger")
+use_src_log_handler("in_root_logger")
 logger = get_logger(__name__)
 
 
